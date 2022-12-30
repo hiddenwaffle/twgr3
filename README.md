@@ -177,4 +177,30 @@ end
 
 * Names of constants begin with a capital letter
 
+* Class/module constants can be accessed outside of a class using `::`
+  * Example: `Math::PI`
+
+Some predefined constants in Ruby (these can also be seen with `ruby -v`)
+
+```ruby
+RUBY_VERSION
+RUBY_PATCHLEVEL
+RUBY_RELEASE_DATE
+RUBY_COPYRIGHT
+```
+
+Use `<<` to add a new element to an existing array
+
+```ruby
+Ticket::VENUES << "Big Mike's Place" # Modifying the array that a constant references
+```
+
+Can use `is_a?()` to determine an object's class hierarchy
+
+```ruby
+Magazine.new.is_a?(Publication)
+```
+
+# Chapter 4 - Modules and program organization
+
 
