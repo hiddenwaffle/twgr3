@@ -107,3 +107,74 @@ end
 * `freeze()` prevents undergoing changes
 * `clone()` is like `dup()` but retains frozen status, if any
   * Also shallow
+
+## Chapter 3 - Organizing objects with classes
+
+* Class methods can be overridden
+  * Last definition wins
+
+```ruby
+Time.new.xmlschema # Errors
+require 'time'
+Time.new.xmlschema # Succeeds
+```
+
+* Syntactic sugar for methods whose names end in `=`
+
+```ruby
+ticket.price=(63.00)
+# or
+ticket.price = 63.00
+```
+
+* Methods whose names end in `=` return the assigned value, *not* the last value of the method
+
+* `attr_reader`, `attr_writer`, `attr_accessor`
+
+* `BasicObject` is above `Object` and is mostly used for DSLs
+  * This is because is has very few methods of its own
+
+Classes can be created like objects
+
+```ruby
+my_class = Class.new
+instance_of_my_class = my_class.new
+
+c = Class.new do
+  def say_hello
+    puts 'Hello!'
+  end
+end
+```
+
+`&:` uses a Proc object to simplify HOF calls
+
+```ruby
+['havoc', 'prodigy'].map(&:capitalize)
+```
+
+Ways to add a class method
+
+```ruby
+class Ticket
+end
+# ...
+def Ticket.most_expensive(*tickets)
+  tickets.max_by(&:price)
+end
+
+class Temperature
+  def Temperature.c2f(celsius)
+    celsius * 9.0 / 5 + 32
+  end
+  # ...
+end
+```
+
+* Method notation in documentation
+  * instance method: `Ticket#price`
+  * class method: `Ticket.most_expensive` or `Ticket::most_expensive`
+
+* Names of constants begin with a capital letter
+
+
