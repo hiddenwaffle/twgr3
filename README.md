@@ -203,4 +203,29 @@ Magazine.new.is_a?(Publication)
 
 # Chapter 4 - Modules and program organization
 
+* `Kernel` is a module that `Object` mixes in
+  * It is where most of Ruby's fundamental methods are defined
 
+* `prepend` is like `include` but causes message lookup to the module before the class
+
+* `ancestors()` shows the order of ancestors for a class or module
+
+* `extend` makes a module's methods available as class methods
+  * Does not add the module to the class's ancestor chain, unlike `prepend` and `include`
+
+* `super` arguments
+  * `super` (no argument list) _forwards_ the method's arguments to the super method
+  * `super()` (empty argument list) sends _no_ arguments to the super method
+  * `super(a, b, c, ....etc)` sends exactly those arguments to the super method
+
+Get an instance of a method of an object
+
+```ruby
+f = obj.method(:hello)
+sf = obj.method(:hello).super_method # nil if no super method
+
+f.call # invoke the method
+```
+
+* Override `method_missing(method, *args, &block)` to handle any messages that an object does not respond to
+  * Call `super` in `method_missing()` to delegate the missing method to the next ancestor
