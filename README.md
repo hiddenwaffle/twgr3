@@ -201,7 +201,7 @@ Can use `is_a?()` to determine an object's class hierarchy
 Magazine.new.is_a?(Publication)
 ```
 
-# Chapter 4 - Modules and program organization
+## Chapter 4 - Modules and program organization
 
 * `Kernel` is a module that `Object` mixes in
   * It is where most of Ruby's fundamental methods are defined
@@ -229,3 +229,178 @@ f.call # invoke the method
 
 * Override `method_missing(method, *args, &block)` to handle any messages that an object does not respond to
   * Call `super` in `method_missing()` to delegate the missing method to the next ancestor
+
+* Modules are often used as namespaces
+
+## Chapter 5 - The default object (self), scope, and visibility
+
+* `self` references
+  * In a class or module definition, self is the class or module object
+  * In an instance-method definition, self will be some future object that calls the method
+  * In singleton methods and class methods, self is the object that owns the method
+
+Using self instead of class names
+
+```ruby
+class C
+  def self.x
+  end
+end
+
+class C
+  class << self
+    def x
+    end
+  end
+end
+```
+
+* If a method name ends with an equal sign (i.e., setter), `self.method` must include the `self.` part, not just `method` by itself
+  * Otherwise Ruby will think that you are creating a new variable
+
+Every instance variable belongs to the current object (`self`) at that poin in the program. Notice the difference here:
+
+```ruby
+class C
+  def set_v
+    @v = 'instance variable that belongs to any instance of C'
+  end
+
+  def self.set_v
+    @v = 'instance variable that belongs to C'
+  end
+end
+```
+
+* `require English` enables aliases for many built-in global variables
+  * `$INPUT_LINE_NUMBER` instead of `$.`
+  * `$PID` instead of `$$`
+  * etc...
+
+Prefix constants with `::` to start at the top-level
+
+```ruby
+class MyClass
+  class String
+  end
+
+  def my_func
+    ::String.new('I am a string') # Does not refer to MyClass::String
+  end
+end
+```
+
+* Class variables
+  * Not class scoped; they are _class-hierarchy_ scoped
+  * Shared between a class and instances of the class,
+    * and shared between superclasses and subclasses
+  * Two at-signs like `@@example` makes a class variable
+
+Initializing a class variable
+
+```ruby
+class Car
+  @@total_count = 0
+  #...
+end
+
+# But it might be better as a class instance variable (notice the def self...)
+class Car
+  def self.total_count
+    @total_count ||= 0
+  end
+  def self.total_count=(n)
+    @total_count = n
+  end
+end
+```
+
+Can declare methods-access rules in classes multiple ways
+
+```ruby
+class X
+  #...
+  private
+  def my_func
+  end
+end
+
+class X
+  #...
+  def my_func
+  end
+  private :my_func
+  #...
+end
+```
+
+Private methods are inherited by subclasses
+
+```ruby
+class A
+  private
+  def cheese
+    puts 'cheese'
+  end
+end
+
+class B < A
+  def please
+    cheese
+  end
+end
+
+B.new.please
+```
+
+Protected methods: these can be called on an object `x`, as long as the default object (self) is an instance of the same class as `x` or of an ancestor of descendant class of `x`'s class
+
+```ruby
+class C
+  def initialize(n)
+    @n = n
+  end
+
+  def n
+    @n
+  end
+
+  def compare(c)
+    if c.n > n # Able to do this because n is protected
+      puts "The other object's n is bigger"
+    else
+      puts "The other object's n is the same or smaller"
+    end
+  end
+
+  protected :n
+end
+
+c1 = C.new(100)
+c2 = C.new(101)
+c1.compare(c2)
+```
+
+Top-level methods are stored as private instances of the `Object` class
+
+```ruby
+def talk
+  puts 'Hello'
+end
+
+# Equivalent to:
+class Object
+  private
+  def talk
+    puts 'Hello'
+  end
+end
+```
+
+All of the private instance methods that `Kernel` provides
+
+```bash
+ruby -e 'p Kernel.private_instance_methods.sort'
+```
+
+
