@@ -403,4 +403,227 @@ All of the private instance methods that `Kernel` provides
 ruby -e 'p Kernel.private_instance_methods.sort'
 ```
 
+## Chapter 6 - Control-flow techniques
+
+`!` has a higher precedence than `==`, so you need parentheses to do this check correctly
+
+```ruby
+if !(x == 1) # ...
+if not x == 1 # ... (But do not need parentheses if using 'not' instead of !)
+```
+
+* `if` and `unless` statements evaluate to objects
+  * If none of the clauses are true, it evaluates to nil
+
+Can call a method in an `if` statement
+
+```ruby
+if m = /la/.match(name)
+  # ... do something with m
+end
+```
+
+* `case` statements
+  * use the _case equality_ method, `===`
+  * can have an `else` clause
+  * like `if` statements, they evaluate to a single object
+
+Match multiple values in a `case` statement by separating them with commas
+
+```ruby
+case answer
+when 'y', 'yes' # matches both 'y' and 'yes'
+  # ...
+else
+  # ...
+end
+```
+
+`case` statements can be written with the keyword by itself, like `if...elsif` statements
+
+```ruby
+case
+when x == 1, y == 2
+  # ...
+else
+  # ...
+end
+```
+
+`loop` examples
+
+```ruby
+n = 1
+loop do
+  puts n
+  n = n + 1
+  break if n > 9
+end
+
+n = 1
+loop do
+  puts n
+  n = n + 1
+  next unless n == 10 # next jumps to the beginning of the loop
+  break
+end
+```
+
+`while` can be placed at the end of a loop
+
+```ruby
+n = 1
+begin
+  puts n
+  n = n + 1
+end while n < 11
+```
+
+`until` can be used as an alterative to `while`
+
+```ruby
+n = 1
+until n > 10
+  puts n
+  n = n + 1
+end
+```
+
+`while` and `until` can be used in one-liners like `if` and `unless`
+
+```ruby
+n = 1
+n = n + 1 until n == 10
+```
+
+Ruby does have a `for` loop
+
+```ruby
+for c in [1, 2, 3]
+  # ...
+```
+
+Due to precedence, writing blocks with `{`/`}` can sometimes be favored over do`/`end`
+
+```ruby
+puts [1, 2].map do |n| n * 10 end   # \___These statements are equal;
+puts([1, 2].map) do |n| n * 10 end  # /   unintended parens placement.
+puts [1, 2].map  { |n| n * 10 }     # <-- Does the expected thing
+```
+
+The code block for `times()` accepts a parameter, which is the iteration number
+
+```ruby
+5.times { |i| puts i } # Outputs "0\n1\n2\n3\n4", evaluates to 5
+```
+
+Blocks have direct access to variables that already exist
+
+```ruby
+def block_scope_demo_2
+  x = 100
+  1.times do
+    x = 200
+  end
+  puts x
+end
+# => 200
+```
+
+Block-local variables are needed to say "give me a new variable x even if one already exists
+
+```ruby
+# Without block-local, final b will be 3:
+a = [1, 2, 3]
+b = 100
+a.each do |c|     # <--------------- no semicolon
+  b = c
+  puts "b: #{b}"
+end
+puts "b: #{b}"
+
+# With block-local, final b will still be 100
+a = [1, 2, 3]
+b = 100
+a.each do |c; b|  # <--------------- semicolon b means "give me a new b for this block"
+  b = c
+  puts "b: #{b}"
+end
+puts "b: #{b}"
+```
+
+The beginning of a method or block provides an implicit `begin`/`end` context
+
+```ruby
+def foo
+  # ...
+  rescue
+    # ...
+end
+
+bar do
+  # ...
+  rescue
+    # ...
+end
+```
+
+* `binding.irb` is one of the built-in methods for debugging
+
+`&.` is the safe navigation operator, or dig operator
+
+```ruby
+nil&.does_not_exist
+# => nil
+```
+
+Three ways to call `raise`
+
+```ruby
+raise
+raise RuntimeError
+raise RuntimeError, 'description'
+```
+
+A full Exception example
+
+```ruby
+class MyException < Exception # StandardError is another common parent class
+end
+
+begin
+  raise MyException, '<---- oops ---->'
+rescue MyException => e
+  puts e.backtrace
+  puts e.message
+  raise # re-raises the exception
+ensure
+  puts 'This always runs'
+end
+```
+
+# Chapter 7 - Built-in essentials
+
+* Special overloaded methods can use Ruby's built-in syntactic sugar
+  * `+ - * / % **`
+  * `[] []= <<`
+  * `<=> == > < >= <=`
+  * `=== | & ^`
+* Some overloaded methods have odd-looking syntax
+  * Unary operators `+` and `-` become `def +@`, `def -@`
+  * Logical not `!` and `not` become `def !`
+* Example:
+
+```ruby
+obj = Object.new
+def obj.+(other)
+  'I am on strike from math'
+end
+puts obj + 100
+```
+
+* Bang `!` method recommendations
+  * Don't use `!` except in `method`/`method!` pairs
+  * Don't use `!` notation with destructive behaviors, or vice versa
+
 
