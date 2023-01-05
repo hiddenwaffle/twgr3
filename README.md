@@ -20,7 +20,7 @@ RbConfig::CONFIG['bindir']
 # (./gems directory is not in this hash but should be next to the 'sitedir' value)
 ```
 
-`load()` checks the current working directory...
+`load` checks the current working directory...
 
 ```ruby
 load 'loadee.rb'
@@ -55,7 +55,7 @@ gem install -r ... # prevent operations to the local domain
 
 * Load path (`$:`) changes when `require` is used
 
-The method `gem()` can be used in programs to lock a specific version of a gem
+The method `gem` can be used in programs to lock a specific version of a gem
 
 ```ruby
 gem "bundler", "1.14.6" # Ruby
@@ -102,10 +102,10 @@ def default_args(a, b, c=1)
 end
 ```
 
-* `dup()` duplicates objects
+* `dup` duplicates objects
   * Shallow
-* `freeze()` prevents undergoing changes
-* `clone()` is like `dup()` but retains frozen status, if any
+* `freeze` prevents undergoing changes
+* `clone` is like `dup` but retains frozen status, if any
   * Also shallow
 
 ## Chapter 3 - Organizing objects with classes
@@ -195,7 +195,7 @@ Use `<<` to add a new element to an existing array
 Ticket::VENUES << "Big Mike's Place" # Modifying the array that a constant references
 ```
 
-Can use `is_a?()` to determine an object's class hierarchy
+Can use `is_a?` to determine an object's class hierarchy
 
 ```ruby
 Magazine.new.is_a?(Publication)
@@ -208,14 +208,14 @@ Magazine.new.is_a?(Publication)
 
 * `prepend` is like `include` but causes message lookup to the module before the class
 
-* `ancestors()` shows the order of ancestors for a class or module
+* `ancestors` shows the order of ancestors for a class or module
 
 * `extend` makes a module's methods available as class methods
   * Does not add the module to the class's ancestor chain, unlike `prepend` and `include`
 
 * `super` arguments
   * `super` (no argument list) _forwards_ the method's arguments to the super method
-  * `super()` (empty argument list) sends _no_ arguments to the super method
+  * `super` (empty argument list) sends _no_ arguments to the super method
   * `super(a, b, c, ....etc)` sends exactly those arguments to the super method
 
 Get an instance of a method of an object
@@ -228,7 +228,7 @@ f.call # invoke the method
 ```
 
 * Override `method_missing(method, *args, &block)` to handle any messages that an object does not respond to
-  * Call `super` in `method_missing()` to delegate the missing method to the next ancestor
+  * Call `super` in `method_missing` to delegate the missing method to the next ancestor
 
 * Modules are often used as namespaces
 
@@ -511,7 +511,7 @@ puts([1, 2].map) do |n| n * 10 end  # /   unintended parens placement.
 puts [1, 2].map  { |n| n * 10 }     # <-- Does the expected thing
 ```
 
-The code block for `times()` accepts a parameter, which is the iteration number
+The code block for `times` accepts a parameter, which is the iteration number
 
 ```ruby
 5.times { |i| puts i } # Outputs "0\n1\n2\n3\n4", evaluates to 5
@@ -625,5 +625,143 @@ puts obj + 100
 * Bang `!` method recommendations
   * Don't use `!` except in `method`/`method!` pairs
   * Don't use `!` notation with destructive behaviors, or vice versa
+
+Calling `to_a` on a `Struct` returns a summary of attribute settings
+
+```ruby
+Computer = Struct.new(:os, :manufacturer)
+laptop1 = Computer.new('linux', 'Lenovo')
+laptop2 = Computer.new('os x', 'Apple')
+[laptop1, laptop2].map(&:to_a)
+# => [["linux", "Lenovo"], ["os x", "Apple"]]
+```
+
+A _bare list_ means several identifiers or literal objects separate by commas (almost like pre-processing)
+
+```ruby
+[1, 2, 3, 4, 5] # a bare list within the literal array constructor brackets
+```
+
+A splat/star/unarray operator is `*` unwraps its operand into a bare list
+
+```ruby
+array = [1, 2, 3, 4, 5]
+[*array]
+# => [1, 2, 3, 4, 5]
+```
+
+* The `Integer` and `Float` methods are like more strict versions of `.to_i` and `.to_f`
+
+"If an object responds to `to_str`, its to_str representation will be used when the object is used as the argument to `String#+.`
+
+```ruby
+class Bob
+  def to_str
+    'Bob'
+  end
+end
+bob = Bob.new
+'Hi ' + bob # Can also use the << operator
+# => "Hi Bob'
+```
+
+`to_ary` helps you use objects like arrays
+
+```ruby
+class Bob
+  def to_ary
+    ['b', 'o', 'b']
+  end
+end
+bob = Bob.new
+[1, 2, 3].concat(bob)
+# => [1, 2, 3, "b", "o", "b"]
+```
+
+* Booleans
+  * `nil` and `false` have a Boolean value of false
+  * Empty class definitions have a Boolean value of false
+  * `true` and `false` are singleton objects of `TrueClass` and `FalseClass`
+  * Boolean arguments in positional parameters can be hard to remember what they mean
+
+* `nil` is a singleton object of `NilClass`
+
+* `Object` defines three equality-test methods
+  * `==`      - typically redefined by subclasses
+  * `eql?`    - typically redefined by subclasses
+  * `equal?`  - "are they the same object?"
+    * Ruby recommends against redefining this
+
+```ruby
+# For Object, all three behave the same way
+a = Object.new
+b = Object.new
+a == b      # false
+a.eql?(b)   # false
+a.equal?(b) # false
+
+# For String, two behave the same way, one does not
+string1 = 'text'
+string2 = 'text'
+string1 == string2      # true
+string1.eql?(string2)   # true
+string1.equal?(string2) # false
+
+# For Integer and Float, == and eql? behave differently
+5 == 5.0      # true
+5.eql? 5.0    # false
+5.equal? 5.0  # false
+```
+
+* `<=>` (spaceship operator)
+  * `<`, `>`, `>=`, `<=`, `==`, `!=`, and `between?` are defined in terms of `<=>`
+  * The `Comparable` module expects `<=>` to be defined
+    * `-1` means less than
+    * `0` means equal to
+    * `1` means greater than
+
+```ruby
+class A
+  # include Comparable # TODO: including this seems optional?
+
+  attr_accessor :value
+
+  def <=>(other)
+    self.value <=> other.value
+    # Or it could be written out explicitly:
+    # if self.value < other.value
+    #   -1
+    # elsif self.value > other.value
+    #   1
+    # else
+    #   0
+    # end
+  end
+end
+x = A.new
+x = 10
+y = A.new
+y = 20
+x < y   # => true
+y < x   # => false
+x == x  # => true
+```
+
+* Reflection
+  * Class-level methods include:
+    * `methods`
+    * `public_instance_methods`/`instance_methods`
+      * `instance_methods(false)` excludes the class's ancestors
+      * `Object.instance_methods(false)` evaluates to `[]` (remember why?)
+    * `private_instance_methods`
+    * `protected_instance_methods`
+  * Instance-level methods include:
+    * `private_methods`
+    * `public_methods`
+    * `protected_methods`
+    * `singelton_methods`
+  * Including a module into a class affects objects that already exist because of how methods are looked up
+
+## Chapter 8 - Strings, symbols, and other scalar objects
 
 
