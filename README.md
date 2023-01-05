@@ -602,7 +602,7 @@ ensure
 end
 ```
 
-# Chapter 7 - Built-in essentials
+## Chapter 7 - Built-in essentials
 
 * Special overloaded methods can use Ruby's built-in syntactic sugar
   * `+ - * / % **`
