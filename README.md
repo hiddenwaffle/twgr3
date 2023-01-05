@@ -764,4 +764,105 @@ x == x  # => true
 
 ## Chapter 8 - Strings, symbols, and other scalar objects
 
+Alternatives to `'` and `"` quoting
+
+```ruby
+# %q{...} is literal, like a single-quoted string but allows single-quotes
+%q{' " \n \t #{}}
+# => "' \" \\n \\t \#{}"
+
+# %Q{...} a.k.a. %{...} does interpolation and escaping, like a double-quoted string
+%Q{' " \n \t #{}} # (%{} is synonymous with %Q)
+# => "' \" \n \t "
+```
+
+Delimiters for `%`-style notations can be almost anything, not just `{...}`
+
+```ruby
+%q-A string-
+%Q/Another string/
+%[Yet another string]
+```
+
+* Heredocs
+  * `<<HERE` includes any spaces
+  * `<<-HERE` switches off the flush-left requirement (ending `HERE` can be in the middle of a line)
+  * `<<~HERE` strips leading whitespace
+
+Confusingly, the `<<HERE` does not have to be the last thing on its line
+
+```ruby
+[<<HERE.to_i * 10]
+5
+HERE
+# => [50]
+```
+
+Basic string manipulation
+
+```ruby
+str = 'abcdefghijklmnopqrstuvwxyz'
+str[-1]           # Last
+# => "z"
+str[6, 9]         # 9 characters starting at [6]
+# => "ghijklmno"
+str[6..9]         # [6] inclusive to [9] inclusive
+# => => "ghij"
+str['defg']       # Substring search (matched)
+# => "defg"
+str['asdf']       # Substring search (did not match)
+# => nil
+str[/q.*u/]       # Regex match
+# => "qrstu"
+```
+
+To set part of a string to a new value, use `[]=`, which has the same indexing as `[]` above
+
+```ruby
+str = 'Hello'
+str['ello'] = 'i'
+str
+# => "Hi"
+```
+
+* Methods to query strings include:
+  * `include?`
+  * `start_with?` and `end_with?`
+  * `empty?`
+  * `size`
+  * `count` - Can count ranges, sets, negations, and more
+  * `index`
+  * `rindex` - Like `index`, but starts on the right
+  * `ord` and `chr` take one character and are opposites
+  * `encoding`
+
+* Methods to transform strings include
+  * `upcase`, `downcase`, `swapcase`, `capitalize`
+    * These have `!` equivalents
+  * `ljust`, `rjust`, `center`
+  * `strip`, `lstrip`, `rstrip`
+  * `chop` and `chomp`
+  * `clear` - Notice that this modifies a String in-place but does not end in `!`
+    * `replace` and `delete` are also the same way
+  * `crypt` applies DES with salt
+    * Example: `'secret'.crypt('salt')`
+  * `succ`
+  * `encode`
+
+* Methods to convert strings include
+  * `to_i`, `to_f`, `to_c`, `to_r`, `oct`, `hex`
+  * `to_sym` a.k.a `intern`
+
+```ruby
+puts __ENCODING___ # Shows the current file's encoding (usually UTF-8)
+```
+
+UTF-8 escaped character
+
+```ruby
+"\u20AC"
+# => "€"
+```
+
+
 
