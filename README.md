@@ -866,4 +866,17 @@ UTF-8 escaped character
 # => "€"
 ```
 
+* `to_s` creates a symbol programmatically
+
+Arrays of strings or symbols can be grep'd
+
+```ruby
+['abc', 'bce', 'efg'].grep(/b/)
+# => ["abc", "bce"]
+```
+
+* Symbols have very similar methods as strings
+  * No bang (`!`) versions because symbols are immutable
+  * Indexing (`[]`) into a symbol returns a string, not another symbol
+
 
