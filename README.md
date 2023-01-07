@@ -853,8 +853,10 @@ str
   * `to_i`, `to_f`, `to_c`, `to_r`, `oct`, `hex`
   * `to_sym` a.k.a `intern`
 
+Show the current file's encoding (usually UTF-8)
+
 ```ruby
-puts __ENCODING___ # Shows the current file's encoding (usually UTF-8)
+puts __ENCODING___
 ```
 
 UTF-8 escaped character
@@ -863,6 +865,5 @@ UTF-8 escaped character
 "\u20AC"
 # => "€"
 ```
-
 
 
