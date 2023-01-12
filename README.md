@@ -879,4 +879,185 @@ Arrays of strings or symbols can be grep'd
   * No bang (`!`) versions because symbols are immutable
   * Indexing (`[]`) into a symbol returns a string, not another symbol
 
+Hex and octal
+
+```ruby
+0x12        # => 18
+0x12 + 12   # => 30
+
+012         # => 10
+012 + 12    # => 22
+012 + 0x12  # => 28
+```
+
+* `Date`, `Time`, and `DateTime` rely on the packages `date` and `time` for (full) functionality
+
+```ruby
+puts Date.today                 # 2023-01-11
+puts Date.new(1959, 2, 1)       # 1959-02-01
+puts Date.parse('2003/6/9')     # 2003-06-09
+puts Date.parse('June 9, 2003') # Parse is pretty flexible
+d = Date.today
+d.day       # => 11
+d.saturday? # => false
+d.leap?     # => false
+d >> 1
+# => #<Date: 2023-02-11 ((2459987j,0s,0n),+0s,2299161j)>
+                # ^^--- added 1 month (also see: next, next_year, next_month, prev_day, etc methods)
+Date.today.rfc2822
+# => "Wed, 11 Jan 2023 00:00:00 +0000"
+
+Time.new                # => 2023-01-11 09:53:28.430124 -0600
+Time.at(0)              # => 1969-12-31 18:00:00 -0600
+Time.mktime(2007, 10, 3, 14, 3, 6)
+# => 2007-10-03 14:03:06 -0500
+Time.parse('2007-10-03 14:03:06 -0500')
+# => 2007-10-03 14:03:06 -0500
+t = Time.now
+t.month   # => 1
+t.sec     # => 29
+t.sunday? # => false
+t.dst?    # => false
+t.strftime('%m-%d-%y')
+# => "01-11-23"
+t - 20    # => 2023-01-11 09:58:09.09056 -0600
+                              # ^^--- subtracted 20 seconds
+t >> 1
+
+puts DateTime.new(2009, 1, 2, 3, 4, 5)            # 2009-01-02T03:04:05+00:00
+puts DateTime.now                                 # 2023-01-11T09:55:42-06:00
+puts DateTime.parse('October 23, 1973, 10:34 AM') # 1973-10-23T10:34:00+00:00
+dt = DateTime.now
+dt.year         # => 2023
+dt.hour         # => 9
+dt.minute       # => 57
+dt.second       # => 41
+dt.wednesday?   # => true
+dt.leap?        # => false
+dt.dst?
+dt >> 2
+# => #<DateTime: 2023-03-11T09:57:41-06:00 ((2460015j,57461s,51328000n),-21600s,2299161j)>
+                    # ^^--- added two months (also see: next, next_year, next_month, prev_day, etc methods)
+DateTime.now.httpdate
+# => "Wed, 11 Jan 2023 16:04:31 GMT"
+```
+
+Iterate over a range of `Date` or `DateTime` objects
+
+```ruby
+d = Date.today
+next_week = d + 7
+d.upto(next_week) do |date|
+  puts "#{date} is a #{date.strftime("%A")}"
+end
+# 2023-01-11 is a Wednesday
+# 2023-01-12 is a Thursday
+# 2023-01-13 is a Friday
+# 2023-01-14 is a Saturday
+# 2023-01-15 is a Sunday
+# 2023-01-16 is a Monday
+# 2023-01-17 is a Tuesday
+# 2023-01-18 is a Wednesday
+```
+
+* Converting between `Time`, `Date`, and `DateTime`
+  * `to_date`
+  * `to_datetime`
+  * `to_time`
+  * `to_date`
+
+## Chapter 9 - Collection and container objects
+
+Hashes are ordered collections
+
+```ruby
+hash = { red: 'ruby', white: 'diamond', green: 'emerald' }
+hash.each_with_index do |(key, value), i|
+  puts "Pair #{i} is #{key}/#{value}"
+end
+# Pair 0 is red/ruby
+# Pair 1 is white/diamond
+# Pair 2 is green/emerald
+```
+
+Destructure an array
+
+```ruby
+(a, b) = [1, 2]
+a # => 1
+b # => 2
+```
+
+Special ways to create an array
+
+```ruby
+Array.new(3)
+# => [nil, nil, nil]
+
+Array.new(3) { |i| 10 * (i + 1) }
+# => [10, 20, 30]
+
+# Can you guess why this happens?
+a = Array.new(3, 'abc')   # => ["abc", "abc", "abc"]
+a[0] << 'def'             # => "abcdef"
+a                         # => ["abcdef", "abcdef", "abcdef"]
+# NOTE: Should have done this instead:
+a = Array.new(3) { 'abc' }
+
+# Array() tries to call to_ary, to_a, or just returns a 1-element array
+obj = Object.new
+def obj.to_a
+  return [1, 2, 3]
+end
+Array(obj)
+# => [1, 2, 3]
+Array('hi')
+# => ["hi"]
+
+# %w and %W operators mean "words"; delimited by whitespace
+%w(Joe Leo III)
+# => ["Joe", "Leo", "III"]
+
+# %W is parsed a like double-quoted string
+%W(Joe is #{2018 - 1981} years old.)
+# => ["Joe", "is", "37", "years", "old."]
+
+# %i and %I are like %w and %W but for symbols
+%i(Joe Leo III)
+# => [:Joe, :Leo, :III]
+```
+
+`try_convert` is a common class method
+
+```ruby
+Array.try_convert(10)         # => nil
+Array.try_convert([1, 2, 3])  # => [1, 2, 3]
+```
+
+Array syntactic sugar
+
+```ruby
+a = ['', 'second', 'third', 'fourth', 'fifth', 'sixth']
+
+a[0] = 'first'      # equivalent
+a.[]=(0, 'first')   # equivalent
+
+a[0]                # equivalent
+a.[](0)             # equivalent
+
+# Get more than one element
+a[1, 2]               # => ["second", "third"]
+a[2..4]               # => ["third", "fourth", "fifth"]
+a.slice(2, 3)         # => ["third", "fourth", "fifth"]
+a.values_at(0, 2, 4)  # => ["first", "third", "fifth"]
+```
+
+Getting sub-array elements
+
+```ruby
+a = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+a.dig(1, 1)           # => 5
+a.dig(100, 500, 55)   # => nil
+```
+
 
