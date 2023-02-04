@@ -1060,4 +1060,35 @@ a.dig(1, 1)           # => 5
 a.dig(100, 500, 55)   # => nil
 ```
 
+* Ends of arrays
+  * `unshift` and `shift`
+  * `push` and `pop`
+  * `<<` and `>>`
 
+* Combining arrays
+  * `concat`
+  * `+`
+  * `replace`
+
+* Array transformations
+
+```ruby
+# * method joins arrays into strings, like `join`
+a = %w(one two three)
+a * "-"
+# =>"one-two-three"
+
+# compact removes nils
+[1, nil, 2, nil].compact
+# => [1, 2]
+```
+
+Sample n` random elements from array `a`
+
+```ruby
+a = [1, 2, 3, 4, 5]
+a.sample()
+# => 2          # which is random
+a.sample(3)
+# => [2, 5, 3]  # which is also random
+```
