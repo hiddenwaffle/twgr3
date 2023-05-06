@@ -1097,3 +1097,29 @@ a.sample(3)
 * Hash transformation: `select`, `reject`, `compact`, `replace`, and `clear` work on hashes similarly to arrays
   * `invert` flips the keys and values (but watch out for discarded duplicates)
 * Hash querying: `has_key?`, `include?`, `key?`, `member?`, `has_value?`, `value`, `empty?`, `size`
+
+Inclusive vs Exclusive Ranges
+
+```ruby
+r = 1..100  # inclusive [1,100]
+r = 1...100 # exclusive [1,100)
+
+r.begin
+r.end
+r.exclude_end?
+
+r = 'a'..'z'
+r.cover?('a')     # true
+r.include?('a')   # true
+r.cover?('abc')   # true
+r.include?('abc') # false <-- behaves differently than cover?
+r.cover?('A')     # false
+r.include?('A')   # false
+
+r = 1.0..2.0
+r.include?(1.5)   # true
+```
+
+* Don't use backwards ranges; has unexpected behaviors
+
+* `Set` is a standard library class, so it must be `require`d
