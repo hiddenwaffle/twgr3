@@ -1092,3 +1092,8 @@ a.sample()
 a.sample(3)
 # => [2, 5, 3]  # which is also random
 ```
+
+* Hashes remember the insertion order of their keys
+* Hash transformation: `select`, `reject`, `compact`, `replace`, and `clear` work on hashes similarly to arrays
+  * `invert` flips the keys and values (but watch out for discarded duplicates)
+* Hash querying: `has_key?`, `include?`, `key?`, `member?`, `has_value?`, `value`, `empty?`, `size`
