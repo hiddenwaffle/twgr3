@@ -1123,3 +1123,37 @@ r.include?(1.5)   # true
 * Don't use backwards ranges; has unexpected behaviors
 
 * `Set` is a standard library class, so it must be `require`d
+
+```ruby
+names = ['a', 'b', 'c']; name_set = Set.new(names) { |name| name.upcase }
+# => #<Set: {"A", "B", "C"}>
+
+name_set << 'd'
+# => #<Set: {"A", "B", "C", "d"}>
+
+name_set.delete('A')
+# => #<Set: {"B", "C", "d"}>
+
+# intersection: &
+# union:        + or |
+# difference:   -
+# exclusive or: ^
+
+# Example:
+name_set + Set.new(['x', 'y', 'z'])
+# => #<Set: {"B", "C", "d", "x", "y", "z"}>
+
+# Merge
+tri_state = Set.new(["Connecticut", "New Jersey"])
+tri_state.merge(["New York"])
+# => #<Set: {"Connecticut", "New Jersey", "New York"}>
+
+# Other methods
+# .subset?
+# .proper_subset?
+# .superset?
+# .proper_superset?
+```
+
+## Chapter 10 - Collections central: Enumerable and Enumerator
+
