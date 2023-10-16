@@ -1157,3 +1157,27 @@ tri_state.merge(["New York"])
 
 ## Chapter 10 - Collections central: Enumerable and Enumerator
 
+* A class that includes `Enumerable` must defined an instance method named `each`.
+
+```ruby
+# Shows methods defined by Enumerable that are now accessible as a result of defining an each method
+Enumerable.instance_methods(false).sort
+```
+* `Enumerable` has queries such as: `include?`, `all?`, `any?`, `one?`, `none?`
+* Float and integer ranges are handled differently (e.g., float ranges cannot be iterated)
+* `Enumerable` has selection methods, such as `find`, `find_all`/`select`, `reject`
+
+A failure-handling function can be given to `find`
+
+```ruby
+failure = lambda { 11 }
+over_ten = [1, 2, 3, 4, 5, 6].find(failure) { |n| n > 10 }
+```
+
+Example `reject`
+
+```ruby
+a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+a.reject { |item| item > 5 }
+# => [1, 2, 3, 4, 5]
+```
