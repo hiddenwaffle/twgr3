@@ -425,6 +425,8 @@ end
 
 * `case` statements
   * use the _case equality_ method, `===`
+    * `a === b` says, "if I have a drawer labeled `a`, does it make sense to put `b` in it?
+    * Example: `Integer === 2` is true, `Integer === 'hello'` is false
   * can have an `else` clause
   * like `if` statements, they evaluate to a single object
 
@@ -1181,3 +1183,32 @@ a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 a.reject { |item| item > 5 }
 # => [1, 2, 3, 4, 5]
 ```
+
+`Enumerable#grep` uses "threequal" (`===`, the "case-equality operator")
+
+```ruby
+colors = %w(red orange yellow)
+colors.grep(/o/)
+# => ["orange", "yellow"]
+
+# grep has a built-in map over matched
+colors.grep(/o/) { |color| color.capitalize }
+# => ["Orange", "Yellow"]
+
+# Ranges implement === as an inclusion test
+range = 10..20
+# => 10..20
+range.grep(15)
+# => [15]
+range.grep(21)
+# => []
+```
+
+* The difference between `Enumerable#group_by` and `Enumerable#partition` is the return value (hash and array, respectively)
+* `Enumerable#take` - get the first n elements
+  * "Constrainable" with `take_while`
+* `Enumerable#drop` - get everything but the first n elements
+  * "Constrainable" with `drop_while`
+* `Enumerable#max` and `Enumerable#min` work the way you would think
+
+
