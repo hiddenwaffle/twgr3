@@ -1,5 +1,13 @@
 # Notes for [_The Well-Grounded Rubyist, 3rd Edition_](https://www.manning.com/books/the-well-grounded-rubyist-third-edition)
 
+## Stray Observations
+
+```ruby
+# Find the source of a method
+SecureRandom.method(:hex).source_location
+# => ["/Users/myuser/.rbenv/versions/3.1.3/lib/ruby/3.1.3/random/formatter.rb", 73]
+```
+
 ## Chapter 1 - Intro
 
 Syntax check a file
@@ -1211,4 +1219,70 @@ range.grep(21)
   * "Constrainable" with `drop_while`
 * `Enumerable#max` and `Enumerable#min` work the way you would think
 
+Relatives of `each`
+* Self-explanatory: `reverse_each`
+* `array.each_with_index` vs `array.each.with_index`
+
+The `slice_` family
+
+* `array.each_slice`
+  * Block that takes `n` elements, _iterating over each group of `n`_
+* `array.each_cons`
+  * Block that takes `n` elements, _iterating over each index_
+* `slice_before`, `slice_after` - group elements by a delimiter
+  * Can be used to split up lines in a file by a delimiter
+* `slice_when` - "test two elements at a time over a collection"
+
+The `cycle` method
+
+```ruby
+class PlayingCard
+  SUITS = %w(clubs diamonds hearts spades)
+  RANKS = %w(2 3 4 5 6 7 8 9 10 J Q K A)
+
+  class Deck
+    attr_reader :cards
+
+    # @param [Integer] number of decks of cards
+    def initialize(n=1)
+      @cards = []
+      SUITS.cycle(n) do |s|
+        RANKS.cycle(1) do |r|
+          @cards << "#{r} of #{s}"
+        end
+      end
+    end
+  end
+end
+```
+
+The `inject` method, a.k.a. "reduce" or "fold"
+
+```ruby
+[1, 2, 3, 4].inject(0) { |acc, n| acc + n }
+# => 10
+[1, 2, 3, 4].inject(:+)
+# => 10
+```
+
+* The `map!` version of `map` is actually defined on the classes that implement it, rather than `Enumerable`
+
+`String` is not an `Enumerable`, just very similar
+* `each_byte`, `each_char`, `each_codepoint`, `each_line`
+* `$/` is what Ruby uses as the delimiter for `each_line`
+* `bytes`
+
+Enumerables are sorted by their spaceship operator `<=>`
+
+```ruby
+class Item
+  attr_accessor :price
+
+  def <=>(other)
+    self.price <=> other.price
+  end
+end
+```
+
+## Chapter 11 - TODO: TBD
 
