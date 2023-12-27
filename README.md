@@ -1272,7 +1272,8 @@ The `inject` method, a.k.a. "reduce" or "fold"
 * `$/` is what Ruby uses as the delimiter for `each_line`
 * `bytes`
 
-Enumerables are sorted by their spaceship operator `<=>`
+Enumerables are sorted by their spaceship operator `<=>`,
+and if you want to _compare_ (`<`, `>`, `==`, `clamp`, `between?`, etc...), you must include `Comparable`
 
 ```ruby
 class Item
@@ -1282,7 +1283,23 @@ class Item
     self.price <=> other.price
   end
 end
+
+class ItemComparable < Item
+  include Comparable
+end
 ```
+
+Sort blocks
+
+```ruby
+["2", 1, 5, "3", "4", "6"].sort { |a, b| a.to_i <=> b.to_i }
+# => [1, "2", "3", "4", 5, "6"]
+
+["2", 1, 5, "3", "4", "6"].sort_by(&:to_i)
+# => [1, "2", "3", "4", 5, "6"]
+```
+
+
 
 ## Chapter 11 - TODO: TBD
 
