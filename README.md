@@ -1299,6 +1299,41 @@ Sort blocks
 # => [1, "2", "3", "4", 5, "6"]
 ```
 
+* Enumerators
+  * Are objects (whereas iterators are methods)
+  * Have an `each` method that is used by the `Enumerable` module
+
+```ruby
+e = Enumerator.new do |y| # `y` is a "yielder"
+  y << 1
+  y << 2
+  y << 3
+end
+e.to_a
+# => [1, 2, 3]
+e.map { |x| x * 10 }
+# => [10, 20, 30]
+# etc...
+```
+
+Attach an enumerator to another object (the enumerator's `each` serves as a front end to the array's `select`)
+
+```ruby
+arr = %w(a b c d)
+e = arr.enum_for(:select)
+e.each { |n| n.include?('a') }
+# => ["a"]
+```
+
+Most built-in iterators return an enumerator when they are called without a block
+
+```ruby
+str = "Hello"
+# These behave the same:
+str.each_byte { |b| puts b }
+(str.each_byte).each { |b| puts b }
+```
+
 
 
 ## Chapter 11 - TODO: TBD
