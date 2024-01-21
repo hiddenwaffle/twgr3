@@ -1334,6 +1334,30 @@ str.each_byte { |b| puts b }
 (str.each_byte).each { |b| puts b }
 ```
 
+Why use an enumerator? One reason is to protect a collection from mutations
+
+```ruby
+class PlayingCard
+  def initialize
+    @cards = ['J', 'K', 'Q', 'A']
+  end
+
+  def cards
+    @cards.to_enum
+  end
+end
+
+x.cards.map { |y| "Face Card: #{y}" }
+# => ["Face Card: J", "Face Card: K", "Face Card: Q", "Face Card: A"]
+x.cards << 'My Card'
+# => undefined method `<<' for #<Enumerator [...]
+```
+
+* Enumerators have `next` and `rewind` methods
+* "An enumerator attaches itself to a particular method on a particular object and uses that method as the foundation method -- the `each` -- for the entire enumerable toolset."
+
+Enumerators help mitigate the problem of creating intermediate objects when method chaining
+
 
 
 ## Chapter 11 - TODO: TBD
