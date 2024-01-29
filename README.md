@@ -1358,7 +1358,43 @@ x.cards << 'My Card'
 
 Enumerators help mitigate the problem of creating intermediate objects when method chaining
 
+```ruby
+string = 'An arbitrary string'
+string.each_byte.map { |b| b + 1 }
+# each_byte spawns an enumerator instead of an array
+```
 
+`with_index(1)` will start counting at 1 instead of 0
 
-## Chapter 11 - TODO: TBD
+Full example: XOR a string
+```ruby
+class String
+  def ^(key)
+    kenum = key.each_byte.cycle
+    each_byte.map { |byte| byte ^ kenum.next }.pack('C*').force_encoding(self.encoding)
+  end
+end
+
+# Example:
+x = 'hello' ^ 'world'
+# => "\x1F\n\x1E\x00\v"
+x ^ 'world'
+# => "hello"
+x ^ 'hello'
+# => "world"
+```
+
+Lazy enumerators
+
+```ruby
+# This runs forever:
+(1..Float::INFINITY).select { |n| n % 3 == 0 }.first(10)
+# This terminates:
+(1..Float::INFINITY).lazy.select { |n| n % 3 == 0 }.first(10)
+# Alternatively:
+(1..Float::INFINITY).lazy.select {|n| n % 3 == 0 }.take(10).force
+```
+
+## Chapter 11 - Regular expressions and regexp-based string operations
+
 
