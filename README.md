@@ -1397,4 +1397,83 @@ Lazy enumerators
 
 ## Chapter 11 - Regular expressions and regexp-based string operations
 
+```ruby
+# Syntax
+//.class
+# => Regexp
+%r{}.class
+# => Regexp
 
+# Matching
+/abc/.match?('123abc123')
+# => true
+'123abc123'.match?(/abc/)
+# => true
+/abc/ =~ '123abc123'
+# => 3 # (numerical index; otherwise nil if no match)
+'123abc123' =~ /abc/
+# => 3 # (numerical index; otherwise nil if no match)
+```
+* Special characters: `^ $ ? . / \ [ ] { } ( ) + *`
+* When using the `%r{}`, you do not have to escape `/`s
+
+Character class examples
+
+```ruby
+%r{[dr]ejected}.match?('dejected')
+# => true
+/[a-z]/.match?('123')
+# => false
+/[a-zA-Z0-9]/.match?('123')
+# => true
+```
+
+* Two ways to match any digit
+  * `/[0-9]/`
+  * `/\d/`
+  * Match anything that isn't a digit by capitalizing: `/\D/`
+    * Same for `\w`/`\W` (digit/alpha/_) and `\s`/`\S` (space/tab/newline)
+
+`match?` vs `match` - the latter returns `MatchData`
+
+```ruby
+x = /1(.*)2(.*)3/.match('1-A-2=B=3')
+# => #<MatchData "1-A-2=B=3" 1:"-A-" 2:"=B=">
+x.string # or x[0]
+# => "1-A-2=B=3"
+x.captures[0] # or x[1] or $1
+# => "-A-"
+x.captures[1] # or x[2] or $2
+# => "=B="
+```
+
+Nested captures
+
+```ruby
+/((a)((b)c))/.match('abc')
+# => #<MatchData "abc" 1:"abc" 2:"a" 3:"bc" 4:"b">
+```
+
+Named captures
+
+```ruby
+re = %r{(?<first>\w+)\s+((?<middle>\w\.)\s+)(?<last>\w+)}
+re = %r{(?<first>\w+)\s+((?<middle>\w\.)\s+)(?<last>\w+)}
+x = re.match('Genghis X. Khan')
+x[:first]
+# => "Genghis"
+x[:middle]
+# => "X."
+x[:last]
+# => "Khan"
+```
+
+`?` directly after a capture paren means the capture is optional
+
+```ruby
+re = %r{(?<color>\w+)\s*((?<fruit>\w+)?)}
+re.match('yellow banana')
+# => #<MatchData "yellow banana" color:"yellow" fruit:"banana">
+re.match('blue')
+# => #<MatchData "blue" color:"blue" fruit:nil>
+```
