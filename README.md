@@ -1477,3 +1477,5 @@ re.match('yellow banana')
 re.match('blue')
 # => #<MatchData "blue" color:"blue" fruit:nil>
 ```
+
+Other `MatchData` methods: `pre_match`, `post_match`, `begin`, `end`
