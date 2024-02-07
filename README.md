@@ -1480,4 +1480,17 @@ re.match('blue')
 
 Other `MatchData` methods: `pre_match`, `post_match`, `begin`, `end`
 
-* `?` means zero or one of the preceeding character
+* `?` means zero or one of the preceeding character or group
+* `+` means one or more of the preceeding character or group
+
+Greedy vs Non-Greedy
+* `+?` is the non-greedy version of `+`
+* `*?` is the non-greedy version of `*`
+
+```ruby
+/.*!/.match('abc!123!')
+# => #<MatchData "abc!123!">
+/.*?!/.match('abc!123!')
+# => #<MatchData "abc!">
+```
+
