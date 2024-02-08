@@ -1494,3 +1494,44 @@ Greedy vs Non-Greedy
 # => #<MatchData "abc!">
 ```
 
+Specific numbers of repetitions
+
+```ruby
+# Exactly 3 digits then 4 digits
+'123-1234'.match(/\d{3}-\d{4}/)
+# => #<MatchData "123-1234">
+'12-123'.match(/\d{3}-\d{4}/)
+# => nil
+
+# Between 1 and 10 digits
+'1234567890'.match(/\d{1,10}/)
+# => #<MatchData "1234567890">
+'1'.match(/\d{1,10}/)
+# => #<MatchData "1">
+'a'.match(/\d{1,10}/)
+# => nil
+
+# 3 or more digits
+'12345'.match(/\d{3,}/)
+# => #<MatchData "12345">
+'12'.match(/\d{3,}/)
+# => nil
+
+# Can you spot the difference?
+/([A-Z]{5})/.match('David BLACK')
+# => #<MatchData "BLACK" 1:"BLACK">
+/([A-Z]){5}/.match('David BLACK')
+# => #<MatchData "BLACK" 1:"K">
+# It is because atoms include subpatterns wrapped in parentheses
+```
+
+Anchors:
+* `^` and `$`
+* `\A` beginning of string
+* `\z` end of string
+* `\Z` end of string, excluding newline, if any
+* `\b` word boundary
+
+Lookahead Assertions
+
+
