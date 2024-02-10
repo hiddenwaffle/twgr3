@@ -1608,4 +1608,8 @@ end
 
 ## Chapter 12 - File and I/O operations
 
+`IO` Objects
 
+* Familiarity with the C standard library helps with understanding `IO`'s API
+* `STDERR`, `STDIN`, and `STDOUT` are `IO` objects available to every program
+* `IO` objects are enumerable: they have methods like `each` for iteration
