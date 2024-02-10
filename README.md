@@ -1534,4 +1534,78 @@ Anchors:
 
 Lookahead Assertions
 
+```ruby
+# "Zero-width positive lookahead assertion"
+# Match three digits followed by a dot, but only return the three digits
+str = "123 456. 789"
+m = /\d+(?=\.)/.match(str)
+# => #<MatchData "456">
+```
+
+Lookbehind Assertions
+
+```ruby
+# Match "BLACK" only when preceded by "David "
+'David BLACK'.match /(?<=David )BLACK/
+# => #<MatchData "BLACK">
+'Jack BLACK'.match /(?<=David )BLACK/
+# => nil
+```
+
+Non-Capturing Parentheses
+
+```ruby
+# "def" is not part of the MatchData
+str = "abc def ghi"
+# => "abc def ghi"
+m = /(abc) (?:def) (ghi)/.match(str)
+# => #<MatchData "abc def ghi" 1:"abc" 2:"ghi">
+```
+
+Conditional Matches
+
+```ruby
+# Match "b" if the first capture (#1) is matched; otherwise match "c"
+str = "abc def ghi"
+m = /(abc) (?:def) (ghi)/.match(str)
+re = /(a)?(?(1)b|c)/ # or: /(?<first>a)?(?(<first>)b|c)/
+re.match("ab")
+# => #<MatchData "ab" 1:"a">
+re.match("b")
+# => nil
+re.match("c")
+# => #<MatchData "c" 1:nil>
+```
+
+Modifiers - These appear after the closing slash
+
+* `/i` - case insensitive
+* `/m` - multiline; useful to use with non-greedy wildcards
+* `/x` - changes the meaning of whitespace; allows you to write comments
+
+`Regexp.escape("...")` lets you escape normal strings so that they can be dropped into a regular expression
+
+```ruby
+/#{Regexp.escape('a.c')}/ # or Regexp.new('a.c')
+#=> "a\\.c"
+```
+
+Example methods that use regular expressions:
+`String#scan`, `String#split`, `String#sub`, `String#gsub`,
+`StringScanner#scan_until`, `StringScanner#skip`
+`Enumerable#grep`
+
+Additionally, like `Enumerable#grep`, case statements use case equality (`===`) with regular expressions.
+
+```ruby
+case str
+when `^y/i`
+  # ...
+when `^n/i`
+  # ...
+end
+```
+
+## Chapter 12 - File and I/O operations
+
 
