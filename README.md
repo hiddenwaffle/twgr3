@@ -1611,5 +1611,12 @@ end
 `IO` Objects
 
 * Familiarity with the C standard library helps with understanding `IO`'s API
+* `IO` objects have methods like `puts`, `print`, and `write`
 * `STDERR`, `STDIN`, and `STDOUT` are `IO` objects available to every program
-* `IO` objects are enumerable: they have methods like `each` for iteration
+* `IO` objects are enumerable: they have methods for iteration, such as `each`
+  * `$/` is the newline character for a given system, so `each` uses it to determine lines.
+    It can be changed to something else the program needs it.
+```ruby
+$/ == "\n"
+# => true
+```
