@@ -1663,3 +1663,25 @@ Directories
     * `File::FNM_DOTMATCH` to match hidden files
 * `mkdir`, `chdir`, `rmdir`/`unlink`/`delete`
 
+Other file-related classes and modules
+
+* `FileUtils` is a UNIX-like interface to files
+* `FileUtils::DryRun` and `FileUtils::NoWrite` show potential outcomes of commands
+* `Pathname`
+  * Dissecting a path: `basename`, `dirname`, `extname`
+  * `ascend` helps with navigation relative to the current directory
+* `StringIO` treats strings like IO objects
+  * Can be helpful when writing tests
+* `Tempfile`
+* `OpenURI` opens network resources as Files
+
+```ruby
+require 'open-uri'
+OpenURI.open_uri('https://rubycentral.org')
+x.class
+# => Tempfile
+x.size
+# => 18734
+```
+
+
