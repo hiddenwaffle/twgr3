@@ -1643,4 +1643,23 @@ $/ == "\n"
 * Output modes
   * `w` write (creates a new file / overwrites an existing)
   * `a` append (creates a new file if needed)
+* Metadata of a `File`
+  * `size` gets the size of a file  * `exist?`
+  * `empty?`
+    * `zero?`
+  * `directory?` / `file?` / `symlink?`
+  * `readable?` / `writable?` / `executable?`
+  * `File::Stat` has some other attributes
+  * `file?` is it actually a file?
+* `Kernel#test` is terser way of executing some of these queries
+
+Directories
+
+* `Dir` is similar to `File`
+* `entries` returns an array of strings of the directory contents
+* `Dir['myfile.*']` or `Dir.glob('myfile.*)` is like `ls myfile.*`
+  * `glob` has optional argument bits
+    * `File::FNM_CASEFOLD` for a case-insensitive search
+    * `File::FNM_DOTMATCH` to match hidden files
+* `mkdir`, `chdir`, `rmdir`/`unlink`/`delete`
 
