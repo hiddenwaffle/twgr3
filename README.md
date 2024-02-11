@@ -1624,3 +1624,23 @@ $/ == "\n"
 
 * `STDIN`, `STDOUT`, and `STERR` correspond to `$stdin`, `$stdout`, and `$stderr`
   * The global variables allow you to redirect to another `IO`, like `$stderr = $stdout`
+* Input is retrieved through `gets` and `getc`
+  * From the keyboard, by default
+
+`File` objects
+
+* `read` reads an entire file into a string
+  * Also available as a class method
+* `readlines` reads an entire file into an array of strings
+  * Also available as a class method
+* `readline` is similar to `gets` (but raises an error if reading past EOF)
+  * Same for `readchar` and `readbyte` vs `getc` and `getbyte`
+* `rewind` moves the position pointer back to the beginning
+  * `pos` to get or set the current position
+  * `seek` has different ways of setting the current position
+* `Enumerable` methods are available through `IO` (i.e., `each`)
+* `ungetc` puts a character onto the stream; opposite of `getc`
+* Output modes
+  * `w` write (creates a new file / overwrites an existing)
+  * `a` append (creates a new file if needed)
+
