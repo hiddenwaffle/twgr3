@@ -1686,4 +1686,9 @@ x.size
 
 ## Chapter 13 - Object individuation
 
+* Certain `Numeric` subclasses and symbols cannot have methods added to it
+  * Everything else is fair game
+* Objects have two classes
+  * The class of which it is an instance
+  * Its singleton class
 
