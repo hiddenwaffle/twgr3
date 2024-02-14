@@ -1692,3 +1692,45 @@ x.size
   * The class of which it is an instance
   * Its singleton class
 
+`<< object` means the anonymous, singleton class of `object`
+
+```ruby
+# Two similar techniques
+str = 'I am a string'
+# Technique 1
+class << str
+  def twice
+    self + ' ' + self
+  end
+end
+# Technique 2
+def str.twice
+ self + ' ' + self
+end
+# NOTE: There is a scope difference between the two (page 419 uses class constants as an example)
+```
+
+Common to see `<< object` pattern used to define class methods
+
+```ruby
+# More similar techniques
+
+class Ticket
+  class << self
+    def most_expensive(*tickets)
+      tickets.max_by(:&price)
+    end
+  end
+end
+
+class << Ticket
+  def most_expensive(*tickets)
+    # ...
+# ...
+
+def Ticket.most_expensive(*tickets)
+  # ...
+# ...
+```
+
+
