@@ -1686,11 +1686,12 @@ x.size
 
 ## Chapter 13 - Object individuation
 
-* Certain `Numeric` subclasses and symbols cannot have methods added to it
-  * Everything else is fair game
 * Objects have two classes
   * The class of which it is an instance
   * Its singleton class
+    * Obtainable through `object.singleton_class`
+* Certain `Numeric` subclasses and symbols cannot have methods added to it
+  * Everything else is fair game
 
 `<< object` means the anonymous, singleton class of `object`
 
@@ -1714,11 +1715,13 @@ Common to see `<< object` pattern used to define class methods
 
 ```ruby
 # More similar techniques
+# (there may be more scope or ordering differences here than noted)
 
 class Ticket
+  attr_accessor :price
   class << self
     def most_expensive(*tickets)
-      tickets.max_by(:&price)
+      tickets.max_by(&:price)
     end
   end
 end
@@ -1731,6 +1734,25 @@ class << Ticket
 def Ticket.most_expensive(*tickets)
   # ...
 # ...
+```
+
+* With respect to singleton classes, methods are encountered in the order of:
+  1. Modules included in the singleton class
+  1. The original class
+  1. Modules included in the original class
+* This implies that a module can be mixed in multiple times!
+
+Use the `ancestors` method to see the hierarchy
+
+```ruby
+m = module M; end
+o = Object.new
+class << o
+  include M
+  ancestors
+end
+# => [#<Class:#<Object:0x000000010cd30f88>>, M, Object, PP::ObjectMixin, Kernel, BasicObject]
+#        ^^^^^^^^^^^^-- o's singleton class  ^--- mixin to the singleton
 ```
 
 
