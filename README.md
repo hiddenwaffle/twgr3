@@ -1755,4 +1755,17 @@ end
 #        ^^^^^^^^^^^^-- o's singleton class  ^--- mixin to the singleton
 ```
 
+Example of modifying a core Ruby class's method
+
+```ruby
+class String
+  def shout
+    "#{self.upcase}!"
+  end
+end
+```
+
+Aliasing methods
+* `alias new old`
+* `alias_method :new, :old`
 
