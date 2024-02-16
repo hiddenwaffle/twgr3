@@ -1798,3 +1798,25 @@ str.extend(GsubBangModifier)
 ```
 
 Refinements allow for temporary, limited-scope changes to a class
+
+```ruby
+module Shout
+  refine String do
+    def shout
+      self.upcase + '!!!'
+    end
+  end
+end
+module MyScope
+  using Shout # "using Shout" in effect from here to the end of the module
+  def self.greeting
+    "hi".shout
+  end
+end
+MyScope.greeting
+# => "HI!!!"
+"hi".shout
+# => undefined method `shout' for "hi":String (NoMethodError)
+```
+
+`BasicObject` is the top of the Ruby class tree
