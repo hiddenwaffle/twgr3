@@ -1797,4 +1797,4 @@ str.extend(GsubBangModifier)
 # Now the possibility of nil has been eliminated from calling gsub!
 ```
 
-
+Refinements allow for temporary, limited-scope changes to a class
