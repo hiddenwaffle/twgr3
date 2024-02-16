@@ -1769,3 +1769,32 @@ Aliasing methods
 * `alias new old`
 * `alias_method :new, :old`
 
+`extend` is an alternative to explicitly opening up a singleton class
+
+```ruby
+# Add the B module to the lookup path of thing by mixing it into its singleton class
+thing = Thing.new
+thing.extend(B)
+
+# Extend a class object during its declaration
+class Thing
+  extend B
+end
+# Extend a class object after its declaration
+Thing.extend(B)
+```
+
+`extend` allows usage of `super`
+
+```ruby
+module GsubBangModifier
+  def gsub!(*args, &block)
+    super || self
+  end
+end
+str = 'Hello there'
+str.extend(GsubBangModifier)
+# Now the possibility of nil has been eliminated from calling gsub!
+```
+
+
