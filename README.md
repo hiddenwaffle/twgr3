@@ -1819,4 +1819,5 @@ MyScope.greeting
 # => undefined method `shout' for "hi":String (NoMethodError)
 ```
 
-`BasicObject` is the top of the Ruby class tree
+* `BasicObject` is the top of the Ruby class tree
+  * Subclasses typically use `method_missing` to extend functionality
