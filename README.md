@@ -1824,4 +1824,20 @@ MyScope.greeting
 
 # Chapter 14 - Callable and runnable objects
 
+* Callable objects
+  * `Proc` objects
+  * lambdas
+  * method objects
+
+Create and call a Proc object
+
+```ruby
+pr = Proc.new { puts "Inside a Proc's block" }
+pr.call
+
+# Shortcut:
+pr = proc { puts "Inside a Proc's block" }
+pr.call
+```
+
 
