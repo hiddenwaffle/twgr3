@@ -1840,4 +1840,90 @@ pr = proc { puts "Inside a Proc's block" }
 pr.call
 ```
 
+Method block as a Proc
+
+```ruby
+def call_a_proc(&block)
+  puts "The block is a: #{block.class}"
+  block.call
+end
+call_a_proc { puts "This is in the proc's block, called from the method's block" }
+```
+
+Proc as a method block
+
+```ruby
+p = Proc.new { |x| puts x.upcase }
+%w{ Cheese Burger }.each(&p)
+```
+
+The `&` also doubles as a call to `to_proc`.
+For example, some objects have their own `to_proc` method:
+
+```ruby
+# Hash
+h = { a: 1, b: 2, c: 3}
+[:a, :c].map(&h)
+# => [1, 3]
+(:a..:b).map(&h)
+# => [1, 2]
+
+# Symbol
+%w(cheese burger).map(&:capitalize)
+# => ["Cheese", "Burger"]
+# Under the hood, it's like this:
+# %w(cheese burger).map { |s| s.public_send(:capitalize) }
+```
+
+Procs are closures
+
+```ruby
+def puts_multiply_by(m)
+  Proc.new { |x| puts x * m }
+end
+pm = puts_multiply_by(10)
+pm.call(12)
+# 120
+```
+
+Procs arity: missing arguments default to nil, and extra can be ignored
+
+```ruby
+pr = Proc.new { |x| p x }
+pr.call
+# nil
+# => nil
+```
+
+Lambdas (a "flavor" of the Proc class) on the other hand complain about the wrong number of arguments
+
+```ruby
+lam = lambda { |x| p x }
+lam.call
+# => wrong number of arguments (given 0, expected 1) (ArgumentError)
+lam.call(1, 2)
+# => wrong number of arguments (given 0, expected 1) (ArgumentError)
+```
+
+Another difference between lambdas and procs is `return`
+
+```ruby
+def return_test
+  l = ->(x, y) { puts "#{x}, #{y}"; return }
+  l.call(10, 20)
+  puts 'Still here!'
+  p = proc { return }
+  p.call
+  puts 'You will not see this message!'
+end
+return_test
+# 10, 20
+# Still here!
+# => nil
+
+# It follows that this would cause an error:
+proc { return }.call
+# => unexpected return (LocalJumpError)
+```
+
 
