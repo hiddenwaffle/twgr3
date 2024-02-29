@@ -1952,3 +1952,32 @@ unbound.bind(d).call
 # => "In name; self is: #<D:0x0000000108b75f30>"
 ```
 
+Potential use of method objects:
+
+```ruby
+# Where A is a superclass of C's superclass
+class A
+  def my_method
+    "hi"
+  end
+end
+class B < A
+  def my_method
+    raise 'Should not get here'
+  end
+end
+class C < B
+  # Execute the version of the my_method two classes up the chain
+  def my_method_from_A
+    A.instance_method(:my_method).bind(self).call
+  end
+end
+C.new.my_method_from_A
+# => "hi"
+```
+
+* Synonyms of the `call` method
+  * `mult[3, 4] # mult.call(3, 4)`
+  * `mult.(3,4) # mult.call(3, 4)`
+
+
