@@ -1926,4 +1926,29 @@ proc { return }.call
 # => unexpected return (LocalJumpError)
 ```
 
+Method objects
+
+```ruby
+class C
+  def name
+    "In name; self is: #{self}"
+  end
+end
+c = C.new
+m = c.method(:name)
+# => #<Method: C#name() (irb):2>
+m.owner
+# => C
+m.call
+# => "In name; self is: #<C:0x0000000108b44a98>"
+
+# Bind the method to another object of the same class/subclass
+class D < C
+end
+d = D.new
+unbound = m.unbind # or: unbound = C.instance_method(:name)
+# => #<UnboundMethod: C#name() (irb):2>
+unbound.bind(d).call
+# => "In name; self is: #<D:0x0000000108b75f30>"
+```
 
