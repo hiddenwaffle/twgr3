@@ -1980,4 +1980,100 @@ C.new.my_method_from_A
   * `mult[3, 4] # mult.call(3, 4)`
   * `mult.(3,4) # mult.call(3, 4)`
 
+The `eval` family
 
+* `eval` - evaluate a string as code
+* `instance_eval` - a temporary shift in the value of self
+  * Can be called on a block instead of a string
+    * `instance_exec` can take arguments and pass them to the block
+  * Commonly used in initializer blocks (see example below)
+  * Can be used to peek at instance variables: `obj.instance_eval { @hidden }`
+* `class_eval`/`module_eval` - side trip into the context of a class-definition block
+  * Can be called on a block instead of a string
+  * Can do things that a regular `class` definition cannot
+    * Open the class definition of an anonymous class
+    * Use existing local variables (i.e, the surrounding variables) inside a class-definition body
+
+```ruby
+# eval example
+eval('2+2')
+# => 4
+eval("def my_f; 'In my_f'; end")
+# => "In my_f"
+
+# instance_eval example
+self
+# => main
+a = :cheese
+a.instance_eval { self } # or a.instance_eval('p self')
+# => :cheese
+
+# instance_eval example 2, initializer block
+class Person
+  # ...
+  def initializer(&block)
+    instance_eval(&block)
+  end
+  # ...
+  def name(name=nil)
+    @name ||= name
+  end
+  # ...
+end
+joe = Person.new do
+  name 'Joe'
+end
+
+# class_eval example
+var = 'initialized variable'
+class C
+end
+# This would error:
+# class C
+#   var
+# end
+# This does not error:
+C.class_eval { var }
+# => "initialized variable"
+
+# class_eval example #2
+var = 'initialized variable'
+class C
+# This errors because the def...end block is a new scope
+C.class_eval { def talk; var; end }
+C.new.talk
+# Using define_method prevents this error
+C.class_eval { define_method('talk') { var } }
+C.new.talk
+# => "initialized variable"
+
+# class_eval example #3, method_missing + define_method
+class Name
+  def method_missing(m, args, &block)
+    self.class.send(:define_method, m) do |args|
+      instance_variable_set("@#{m.to_s.chop}", args)
+    end
+    send(m, args)
+  end
+end
+n = Name.new
+n.cheese = 'burger'
+n
+# => #<Name:0x0000000107f75668 @cheese="burger">
+```
+
+`Binding`
+* _"Binding objects encapsulate the local variable bindings in effect at a given point in execution"_
+* `binding` returns whatever the current binding is
+* Allow evaluation in the context of a given binding
+
+```ruby
+# Allows str to be visible when the eval executes "puts str"
+def use_a_binding(b)
+  eval('puts str', b)
+end
+str = 'This is my string'
+use_a_binding(binding)
+```
+
+* History trivia: `Object#tainted?` and `$SAFE` are no longer supported or accurate
