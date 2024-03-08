@@ -2085,8 +2085,38 @@ use_a_binding(binding)
     * `Fiber`s are like reentrant code blocks, like `Enumerator`s
   * Thread-local globals
     * `$1`, `$2`, `...` captures are thread-local globals
+    * `$?` (set by the last system call of a thread)
   * Thread keys are a key-value store for thread-specific symbols or strings
     * `Thread.current[:key] = 'value'`
     * `t.fetch(:key) # => "value"`
+
+Executing system commands
+
+```ruby
+system('date')
+# Thu Mar  7 22:57:17 CST 2024
+# => true
+$?
+# => #<Process::Status: pid 11955 exit 0>
+`date` # Backticks can also be used
+# => "Thu Mar  7 23:02:43 CST 2024\n"
+%x(date) # Yet another way
+# => "Thu Mar  7 23:02:43 CST 2024\n"
+exec('date') # This replaces the current process!
+# Thu Mar  7 23:03:49 CST 2024
+# <process exits back to the shell>
+d = open('|date')
+
+# Using open:
+d = open('|date')
+# => #<IO:fd 9>
+d.gets
+# => "Thu Mar  7 23:05:02 CST 2024\n"
+d.close
+# => nil
+# NOTE: The Open3.popen3 bidirectional method is not shown here
+```
+
+## Chapter 15 - Callbacks, hooks, and runtime introspection
 
 
