@@ -2077,3 +2077,16 @@ use_a_binding(binding)
 ```
 
 * History trivia: `Object#tainted?` and `$SAFE` are no longer supported or accurate
+
+* Threads
+  * Receive a block to run on initialization
+  * Useful methods: `join`, `alive?`, `stop`, `status`, `wakeup`
+  * `Thread`s are similar to `Fiber`s
+    * `Fiber`s are like reentrant code blocks, like `Enumerator`s
+  * Thread-local globals
+    * `$1`, `$2`, `...` captures are thread-local globals
+  * Thread keys are a key-value store for thread-specific symbols or strings
+    * `Thread.current[:key] = 'value'`
+    * `t.fetch(:key) # => "value"`
+
+
